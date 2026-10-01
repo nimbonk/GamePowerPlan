@@ -1,0 +1,10 @@
+# compiled program (it goes in Releases instead)
+*.exe
+*.pdb
+
+# your own settings file
+GamePowerPlan.cfg
+
+# Windows folder junk
+Thumbs.db
+Desktop.ini
