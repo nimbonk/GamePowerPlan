@@ -4,7 +4,9 @@ A tiny tray app for Windows that puts your PC on the high performance power plan
 
 I made it because electric is getting expensive and I didn't want my PC sitting on full performance all day for no reason. I just wanted it to switch by itself when I launch a game and switch back when I'm done. That's it.
 
-I built this and tested it on my own PC (Windows 10, Ryzen). Read the source, it's one file.
+I built this and tested it on my own PC (Ryzen, Windows 10 and Windows 11). Read the source, it's one file.
+
+It's made by [Nimbonk](https://nimbonk.fyi). The Microsoft Store version is coming soon.
 
 ## How it works
 
@@ -53,24 +55,47 @@ You can set a global hotkey from Settings (it has to include Ctrl or Alt). It cy
 
 ## Settings file
 
-Settings are saved in `GamePowerPlan.cfg`, in the same folder as the exe. It's created the first time you run the app. If you do edit it by hand, use Reload settings in the tray menu to apply the changes. If the exe is somewhere Windows won't let it write (like Program Files), it uses `%APPDATA%\GamePowerPlan\` instead.
+Settings are saved in `GamePowerPlan.cfg`, in the same folder as the exe. It's created the first time you run the app. If you do edit it by hand, use Reload settings in the tray menu to apply the changes. If the exe is somewhere Windows won't let it write (like Program Files), it uses `%APPDATA%\GamePowerPlan\` instead. The Store version always uses the second location.
 
 ## Build it
 
-You don't need to install anything. Windows already comes with a C# compiler. Put `GamePowerPlan.cs` in a folder, open a terminal there and run this on one line:
+You don't need to install anything. Windows already comes with a C# compiler. Download `GamePowerPlan.cs`, `GamePowerPlan.manifest` and `build.bat` into one folder and run `build.bat`. Or open a terminal there and run this on one line:
 
 ```
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /out:GamePowerPlan.exe /r:System.Windows.Forms.dll /r:System.Drawing.dll GamePowerPlan.cs
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /out:GamePowerPlan.exe /win32manifest:GamePowerPlan.manifest /r:System.Windows.Forms.dll /r:System.Drawing.dll GamePowerPlan.cs
 ```
 
 Then run `GamePowerPlan.exe`. If it's already running, exit it from the tray first, because Windows won't let you replace a running exe.
 
 ## Things to know
 
-- Tested on Windows 10 only. It should work on Windows 11 too, but I haven't tried it there.
+- Tested on Windows 10 and Windows 11.
 - It doesn't touch your games. No injecting, no reading game memory, no overlays, no drivers. It only asks Windows for each program's file path and changes the power plan. I can't promise every anti-cheat will be happy with any background program though, so use it at your own risk.
 - The exe isn't code signed, so Windows SmartScreen may warn about an unknown publisher, and some antivirus tools can get twitchy about a program that scans processes and adds a startup entry. The source is right here so you can check it, or build it yourself.
 - Games installed outside the usual folders won't be spotted until you add their folder from the Games menu.
+
+## Is it safe?
+
+GamePowerPlan is open source: everything it does is in `GamePowerPlan.cs`, and you can read it or build it yourself with `build.bat`.
+
+- It has no network code and collects nothing. See the [privacy policy](https://nimbonk.fyi/privacy/).
+- The plain exe is not code signed, because certificates cost money. Windows SmartScreen may warn about it, and a few antivirus engines can flag small unsigned tools as a false positive.
+- The Microsoft Store version is signed by Microsoft, so it avoids those warnings.
+- Each release lists a SHA-256 hash and a VirusTotal scan, so you can check your download matches.
+
+## Why does the Store version need full trust?
+
+GamePowerPlan is a .NET desktop tray app packaged as a full trust app. It needs the `runFullTrust` capability to use Win32 APIs that UWP apps can't:
+
+- It reads the file paths of running programs (`OpenProcess`, `QueryFullProcessImageName`) to detect games.
+- It switches the Windows power plan (`PowerSetActiveScheme`, `powercfg.exe`).
+- It uses a tray icon and an optional global hotkey.
+
+It does not read process memory, inject code, use the network or collect any data. The full source is in this repo, so you can check all of this yourself.
+
+## Store package
+
+The `msix` folder has what's needed to build the Microsoft Store package. Run `msix\build-msix.bat` (it needs the Windows SDK). In the Store version, "Start with Windows" opens Windows' own Startup apps settings, because the usual registry method doesn't work inside a Store package.
 
 ## Licence
 
