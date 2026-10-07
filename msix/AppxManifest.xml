@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap desktop rescap">
+
+  <Identity
+    Name="RyanKeller.GamePowerPlan"
+    Publisher="CN=875CC188-C203-4BA8-84D2-F1C44FBE4E0E"
+    Version="1.0.0.0"
+    ProcessorArchitecture="neutral" />
+
+  <Properties>
+    <DisplayName>GamePowerPlan</DisplayName>
+    <PublisherDisplayName>Ryan Keller</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application Id="GamePowerPlan" Executable="GamePowerPlan.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="GamePowerPlan"
+        Description="Tray app that switches the Windows power plan while a game is running."
+        BackgroundColor="#1E232D"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png" />
+      <Extensions>
+        <desktop:Extension Category="windows.startupTask" Executable="GamePowerPlan.exe" EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="GamePowerPlanStartup" Enabled="false" DisplayName="GamePowerPlan" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

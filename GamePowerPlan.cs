@@ -3,19 +3,30 @@
 // Everything is controlled from the tray icon. Settings are stored in GamePowerPlan.cfg next to the exe.
 //
 // Build (one line, no install needed):
-//   C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /out:GamePowerPlan.exe /r:System.Windows.Forms.dll /r:System.Drawing.dll GamePowerPlan.cs
+//   C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /out:GamePowerPlan.exe /win32manifest:GamePowerPlan.manifest /r:System.Windows.Forms.dll /r:System.Drawing.dll GamePowerPlan.cs
+// (or just run build.bat)
+// Microsoft Store package: see the msix folder (run msix\build-msix.bat)
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
+
+[assembly: AssemblyTitle("GamePowerPlan")]
+[assembly: AssemblyDescription("Tray app that switches the Windows power plan while a game is running")]
+[assembly: AssemblyCompany("Nimbonk")]
+[assembly: AssemblyProduct("GamePowerPlan")]
+[assembly: AssemblyCopyright("Copyright (c) 2026 Nimbonk")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
 
 class PlanInfo
 {
@@ -90,6 +101,24 @@ class GamePowerPlan : ApplicationContext
 
     [DllImport("user32.dll")]
     static extern bool DestroyIcon(IntPtr handle);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+    static extern int GetCurrentPackageFullName(ref int length, StringBuilder name);
+
+    // True when running from the Microsoft Store (MSIX) package, false for the plain exe.
+    // In the Store package the registry Run key is virtualised and would not start the app at login,
+    // so "Start with Windows" opens Windows' own Startup apps page instead.
+    static readonly bool packaged = IsPackaged();
+
+    static bool IsPackaged()
+    {
+        try
+        {
+            int len = 0;
+            return GetCurrentPackageFullName(ref len, null) != 15700;   // APPMODEL_ERROR_NO_PACKAGE
+        }
+        catch { return false; }
+    }
 
     // ---- Settings (stored in the cfg) -------------------------------------
 
@@ -277,7 +306,8 @@ class GamePowerPlan : ApplicationContext
         hotkeyItem.Text = "Hotkey: " + (hotkeyText.Length == 0 ? "not set" : hotkeyText) + "...";
         notifyItem.Checked = notifyOverride;
         holdItem.Checked = holdPlan;
-        startupItem.Checked = StartupEnabled();
+        startupItem.Text = packaged ? "Start with Windows (opens Windows Settings)..." : "Start with Windows";
+        startupItem.Checked = !packaged && StartupEnabled();
         gamingPlanMenu.Text = "Gaming plan: " + PlanName(gamingGuid) + (gamingPlanSetting == "auto" ? " (auto)" : "");
         idlePlanMenu.Text = "Idle plan: " + PlanName(idleGuid) + (idlePlanSetting == "auto" ? " (auto)" : "");
         bool tracking = (gamePid != 0 && gameName != null);
@@ -1276,6 +1306,11 @@ class GamePowerPlan : ApplicationContext
 
     void ToggleStartup()
     {
+        if (packaged)
+        {
+            try { Process.Start("ms-settings:startupapps"); } catch { }
+            return;
+        }
         bool enabled = StartupEnabled();
         using (RegistryKey k = Registry.CurrentUser.OpenSubKey(RunKey, true))
         {
