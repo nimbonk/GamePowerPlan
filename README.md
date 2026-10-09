@@ -4,7 +4,7 @@ A tiny tray app for Windows that puts your PC on the high performance power plan
 
 I made it because electric is getting expensive and I didn't want my PC sitting on full performance all day for no reason. I just wanted it to switch by itself when I launch a game and switch back when I'm done. That's it.
 
-I built this and tested it on my own PC (Ryzen, Windows 10 and Windows 11). Read the source, it's one file.
+I built this and tested it on my own PC (AMD Ryzen, Windows 10 and AMD Ryzen, Windows 11). Read the source, it's one file.
 
 It's made by [Nimbonk](https://nimbonk.fyi). You can get it from the [Microsoft Store](https://apps.microsoft.com/detail/9PF9KW933WVG), or build it yourself below.
 
