@@ -25,8 +25,8 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("Nimbonk")]
 [assembly: AssemblyProduct("GamePowerPlan")]
 [assembly: AssemblyCopyright("Copyright (c) 2026 Nimbonk")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
 
 class PlanInfo
 {

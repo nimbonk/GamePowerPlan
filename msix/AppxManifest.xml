@@ -9,7 +9,7 @@
   <Identity
     Name="RyanKeller.GamePowerPlan"
     Publisher="CN=875CC188-C203-4BA8-84D2-F1C44FBE4E0E"
-    Version="1.0.0.0"
+    Version="1.0.1.0"
     ProcessorArchitecture="neutral" />
 
   <Properties>
