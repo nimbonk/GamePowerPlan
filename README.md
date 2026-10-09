@@ -6,7 +6,7 @@ I made it because electric is getting expensive and I didn't want my PC sitting 
 
 I built this and tested it on my own PC (Ryzen, Windows 10 and Windows 11). Read the source, it's one file.
 
-It's made by [Nimbonk](https://nimbonk.fyi). The Microsoft Store version is coming soon.
+It's made by [Nimbonk](https://nimbonk.fyi). You can get it from the [Microsoft Store](https://apps.microsoft.com/detail/9PF9KW933WVG), or build it yourself below.
 
 ## How it works
 
