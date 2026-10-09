@@ -4,9 +4,13 @@ A tiny tray app for Windows that puts your PC on the high performance power plan
 
 I made it because electric is getting expensive and I didn't want my PC sitting on full performance all day for no reason. I just wanted it to switch by itself when I launch a game and switch back when I'm done. That's it.
 
-I built this and tested it on my own PC (AMD Ryzen, Windows 10 and AMD Ryzen, Windows 11). Read the source, it's one file.
+I built this and tested it on my own PC (Ryzen, Windows 10 and 11). Read the source, it's one file.
 
-It's made by [Nimbonk](https://nimbonk.fyi). You can get it from the [Microsoft Store](https://apps.microsoft.com/detail/9PF9KW933WVG), or build it yourself below.
+It's made by [Nimbonk](https://nimbonk.fyi).
+
+## Download
+
+Get it from the [Microsoft Store](https://apps.microsoft.com/detail/9PF9KW933WVG). The Store version is signed by Microsoft, so you won't get SmartScreen or antivirus warnings. Or build it yourself, see below.
 
 ## How it works
 
@@ -71,31 +75,11 @@ Then run `GamePowerPlan.exe`. If it's already running, exit it from the tray fir
 
 - Tested on Windows 10 and Windows 11.
 - It doesn't touch your games. No injecting, no reading game memory, no overlays, no drivers. It only asks Windows for each program's file path and changes the power plan. I can't promise every anti-cheat will be happy with any background program though, so use it at your own risk.
-- The exe isn't code signed, so Windows SmartScreen may warn about an unknown publisher, and some antivirus tools can get twitchy about a program that scans processes and adds a startup entry. The source is right here so you can check it, or build it yourself.
+- The exe isn't code signed, so Windows SmartScreen may warn about an unknown publisher, and some antivirus tools can get twitchy about a program that scans processes and adds a startup entry. That's why there's no prebuilt exe here. The source is right here so you can check it, use the Store version, or build it yourself.
 - Games installed outside the usual folders won't be spotted until you add their folder from the Games menu.
-
-## Is it safe?
-
-GamePowerPlan is open source: everything it does is in `GamePowerPlan.cs`, and you can read it or build it yourself with `build.bat`.
-
-- It has no network code and collects nothing. See the [privacy policy](https://nimbonk.fyi/privacy/).
-- The plain exe is not code signed, because certificates cost money. Windows SmartScreen may warn about it, and a few antivirus engines can flag small unsigned tools as a false positive.
-- The Microsoft Store version is signed by Microsoft, so it avoids those warnings.
-- Each release lists a SHA-256 hash and a VirusTotal scan, so you can check your download matches.
-
-## Why does the Store version need full trust?
-
-GamePowerPlan is a .NET desktop tray app packaged as a full trust app. It needs the `runFullTrust` capability to use Win32 APIs that UWP apps can't:
-
-- It reads the file paths of running programs (`OpenProcess`, `QueryFullProcessImageName`) to detect games.
-- It switches the Windows power plan (`PowerSetActiveScheme`, `powercfg.exe`).
-- It uses a tray icon and an optional global hotkey.
-
-It does not read process memory, inject code, use the network or collect any data. The full source is in this repo, so you can check all of this yourself.
-
-## Store package
-
-The `msix` folder has what's needed to build the Microsoft Store package. Run `msix\build-msix.bat` (it needs the Windows SDK). In the Store version, "Start with Windows" opens Windows' own Startup apps settings, because the usual registry method doesn't work inside a Store package.
+- No network code, and it collects nothing. [Privacy policy](https://nimbonk.fyi/privacy/).
+- The Store version asks for "full trust" because it has to read the paths of running programs and change the power plan, which sandboxed apps can't do. It doesn't read memory or inject anything. It's all in GamePowerPlan.cs.
+- The msix folder is the Store packaging.
 
 ## Licence
 
